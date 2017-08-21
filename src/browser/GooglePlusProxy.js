@@ -112,16 +112,16 @@ if (window.location.protocol === "file:") {
             gapi.auth2.init({
                 client_id: CLIENT_ID,
             }).then(function () {
+                __googleSdkReady = true;
+
+                for (var i = 0; i < __googleCallbacks.length; i++) {
+                    __googleCallbacks[i].call(GooglePlusProxy);
+                }
+
                 // Listen for sign-in state changes.
                 gapi.auth2.getAuthInstance().isSignedIn.listen(GooglePlusProxy.updateSigninStatus);
             });
         });
-
-        __googleSdkReady = true;
-
-        for (var i = 0; i < __googleCallbacks.length; i++) {
-            __googleCallbacks[i]();
-        }
     };
 
     configHelper.readConfig(function(config) {
