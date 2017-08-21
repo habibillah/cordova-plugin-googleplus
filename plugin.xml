@@ -112,9 +112,6 @@
       </feature>
       <access origin="https://accounts.google.com/*" />
     </config-file>
-
-    <!-- after_prepare hook to populate APP_ID -->
-    <hook type="after_prepare" src="hooks/browser/after_prepare.js" />
   </platform>
 
 </plugin>

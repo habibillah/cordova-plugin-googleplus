@@ -1,3 +1,6 @@
+var cordova = require('cordova');
+var configHelper = cordova.require('cordova/confighelper');
+
 var __googleSdkReady = false;
 var __googleCallbacks = [];
 
@@ -100,13 +103,14 @@ var GooglePlusProxy = {
     }
 };
 
+var CLIENT_ID;
 if (window.location.protocol === "file:") {
     console.warn("Google API is not supported when using file:// protocol");
 } else {
     window.handleClientLoad = function() {
         gapi.load('auth2', function () {
             gapi.auth2.init({
-                client_id: CLIENT_ID // CLIENT_ID is populated by the cordova after_prepare hook
+                client_id: CLIENT_ID,
             }).then(function () {
                 // Listen for sign-in state changes.
                 gapi.auth2.getAuthInstance().isSignedIn.listen(GooglePlusProxy.updateSigninStatus);
@@ -120,15 +124,26 @@ if (window.location.protocol === "file:") {
         }
     };
 
-    (function(d, s, id){
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement(s); js.id = id;
-        js.onload = function () { window.handleClientLoad(); };
-        js.onreadystatechange = function () { if (this.readyState === 'complete') js.onload(); };
-        js.src = "https://apis.google.com/js/api.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'googleplus-jssdk'));
+    configHelper.readConfig(function(config) {
+        CLIENT_ID = config.getPreferenceValue('GOOGLE_PLUS_CLIENT_ID');
+
+        if( !CLIENT_ID ) {
+            console.error("Could not load the GOOGLE_PLUS_CLIENT_ID preference from your config.xml");
+            return;
+        }
+
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.onload = function () { window.handleClientLoad(); };
+            js.onreadystatechange = function () { if (this.readyState === 'complete') js.onload(); };
+            js.src = "https://apis.google.com/js/api.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'googleplus-jssdk'));
+    }, function(err) {
+        console.error(err);
+    });
 }
 
 module.exports = GooglePlusProxy;
