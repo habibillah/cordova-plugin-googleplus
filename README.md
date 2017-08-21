@@ -54,9 +54,6 @@ This step is _especially_ important if you are using a framework such as Ionic t
 </widget>
 ```
 
-### Browser
-Browser platfor require a valid `REVERSED_CLIENT_ID` as same as *iOS* platform. See [iOS setup](#ios) below for more detail.
-
 ### iOS
 To get your iOS `REVERSED_CLIENT_ID`, [generate a configuration file here](https://developers.google.com/mobile/add?platform=ios&cntapi=signin).
 This `GoogleService-Info.plist` file contains the `REVERSED_CLIENT_ID` you'll need during installation. _This value is only needed for iOS._
@@ -77,6 +74,20 @@ IMPORTANT:
 $ keytool -exportcert -keystore <path-to-debug-or-production-keystore> -list -v -alias <alias-name>
 ```
 Login on Android will use the accounts signed in on the user's device.
+
+### Browser
+
+In the developer console, select the "Web client" "OAuth 2.0 client ID" which
+is typically auto-created by Google when you set up the iOS or Android keys
+above and create a section in config.xml containing the details from "Client
+ID" (not reversed) as below:
+
+```xml
+    <platform name="browser">
+        <preference name="GOOGLE_PLUS_CLIENT_ID" value="123456789123-abcdefg1234567abcdefg1234456abcd.apps.googleusercontent.com" />
+    </platform>
+```
+
 
 ### Web Client Id
 
@@ -107,7 +118,7 @@ IMPORTANT:
 
 * _Please note that `myreversedclientid` is a place holder for the reversed clientId you find in your iOS configuration file. Do not surround this value with quotes. **(iOS only Applications)**_
 
-* _If you are building a hybrid application **(Browser, iOS and Android)**, or an Android application, you have to replace `myreversedclientid` with the reverse value of Client ID in your **Release** credential generated on step 3, on [Google Developer's Console](https://console.developers.google.com/), this will be: **"com.googleusercontent.apps.`uniqueId`"**, without quotes._
+* _If you are building a hybrid application **(iOS and Android)**, or an Android application, you have to replace `myreversedclientid` with the reverse value of Client ID in your **Release** credential generated on step 3, on [Google Developer's Console](https://console.developers.google.com/), this will be: **"com.googleusercontent.apps.`uniqueId`"**, without quotes._
 
 GooglePlus.js is brought in automatically. There is no need to change or add anything in your html.
 
